@@ -1,0 +1,23 @@
+Rubric turned in on time (5 points)
+
+Languages/Frameworks used (30 points)
+10 - Learned/Used React frontend
+10 - Learned/Used Flask backend
+5 - Firebase Database
+5 - Learned/Used tMDB API
+<br>
+Functionality (40 points)
+4 - Users can create accounts and log in / log out
+1 - Passwords are hashed and salted
+10 - Users can search for specific movies and add them to a favorites list
+5 - Users can leave custom ratings for movies
+10 - The website calculates movies to watch next based on user ratings movies
+10  - Users have a visible profile page where it displays their movie ratings
+<br>
+Best Practices (5 points)
+3 - Code is readable and well formatted
+2 - All pages pass the html validator
+<br>
+Creative Portion (20 points)
+10 - Users can form a group of friends with other users
+10 - The website can suggest a movie for a group based off group reviews

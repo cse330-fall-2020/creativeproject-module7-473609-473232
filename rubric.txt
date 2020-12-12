@@ -3,7 +3,7 @@ Rubric turned in on time (5 points)
 Languages/Frameworks used (30 points)
 10 - Learned/Used React frontend
 10 - Learned/Used Flask backend
-5 - Firebase Database
+5 - SqlLite Database
 5 - Learned/Used tMDB API
 <br>
 Functionality (40 points)

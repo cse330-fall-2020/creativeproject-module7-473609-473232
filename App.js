@@ -3,6 +3,8 @@ import Register from './Register';
 import Login from './Login'
 import React, {Component} from 'react'
 
+var currentUser = null;
+
 class App extends Component {
 
   state = {
@@ -39,25 +41,46 @@ class App extends Component {
       headers: {'content-type': 'application/json', "accepts":"application/json"},
     })
         .then((response) => response.json())
+        .then(currentUser = data.username)
         .then((data) => 
           console.log(
+            data.username,
             data.success
-              ? "Login successfull"
+              ? "Login successful"
               : "Login unsuccessful"
           )
         )
         .catch((err) => console.error(err))
   }
+
+  // For logging out
+  logout() {
+    currentUser = null;
+    console.log("logged out")
+    window.location.reload(); 
+  }
   
   render(){
+    console.log(currentUser)
+    if(currentUser == null){
     return(
       <div>
-        <h1>Max and Kusak's Amazing 330 Creative Project!</h1>
+        <h1>Max and Kusak's Amazing 330 Creative Project: The Login Page</h1>
       <Register handleSubmit={this.handleSubmitRegistration} />
       <Login handleSubmit={this.handleSubmitLogin}/>
       </div>
-    )
+    );
+    }
+  else{
+    return(
+    <div> 
+    <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
+    <p>Hello {currentUser}!</p>
+    <button onClick={this.logout}>Logout</button>
+    </div>
+  );
   }
+}
 }
 
 export default App;

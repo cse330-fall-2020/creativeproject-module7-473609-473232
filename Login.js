@@ -1,7 +1,7 @@
 
 import React, {Component} from 'react'
 
-class Register extends Component{
+class Login extends Component{
 
     initialState = {
         Username: '',
@@ -30,11 +30,11 @@ class Register extends Component{
         const { Username, Password } = this.state;
 
         return(
-            <div>
-        <p>Register:</p>
+          <div>
+          <p>Log in as existing User: </p>
         <form>
-            New Username: <input type = "text" name = "Username" id = "Username" value = {Username} onChange={this.handleChange}></input>
-            New Password: <input type = "text" name = "Password" id = "Password" value = {Password} onChange={this.handleChange}></input>
+            Username: <input type = "text" name = "Username" id = "Username" value = {Username} onChange={this.handleChange}></input>
+            Password: <input type = "text" name = "Password" id = "Password" value = {Password} onChange={this.handleChange}></input>
             <input type="button" value="Submit" onClick={this.submitForm} />
         </form>
         </div>
@@ -42,4 +42,4 @@ class Register extends Component{
 
     }
 }
-export default Register
+export default Login

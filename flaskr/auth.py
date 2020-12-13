@@ -41,8 +41,8 @@ def register():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.json['username']
+        password = request.json['password']
         db = get_db()
         error = None
         user = db.execute(
@@ -57,11 +57,12 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            return {"success":True}
 
         flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('auth/register.html')
+    
 
 @bp.before_app_request
 def load_logged_in_user():

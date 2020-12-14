@@ -10,17 +10,31 @@ class App extends Component {
 
   state = {
     users: [],
-  }
+    currentGroup: {},
+    inGroup: false
+  };
 
   constructor(){
     super();
     this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
+    this.forceUpdateHandlerGroup = this.forceUpdateHandlerGroup.bind(this);
   };
 
+  // For logging out
   forceUpdateHandler(){
     localStorage.setItem('user',"not logged in")
     console.log("logged out")
     this.forceUpdate();
+  };
+
+  // For leaving a group
+  forceUpdateHandlerGroup(){
+    console.log("group has been disbanded")
+    localStorage.setItem("inGroup" , "false")
+    localStorage.setItem("userOne", null)
+    localStorage.setItem("userTwo", null)
+    this.setState({currentGroup: {}})
+    this.setState({inGroup: false})
   };
 
 // For User Registration
@@ -58,8 +72,8 @@ class App extends Component {
           console.log(
             data.username,
             data.success
-              ? "Login successful"
-              : "Login unsuccessful"
+              ? "has been logged in successfully"
+              : "has NOT been logged in"
           )
         )
         .catch((err) => console.error(err))
@@ -67,53 +81,82 @@ class App extends Component {
 
   // For adding two users to a group
   handleSubmitGroup = (user) => {
-    console.log("App.js: ", {user})
     this.setState({user})
-    const data = {user}
+    const data = {usernameToAdd: user.UsernameToAdd}
     fetch('/auth/create',{
       method: 'POST',
       body: JSON.stringify(data),
       headers: {'content-type': 'application/json', "accepts":"application/json"},
     })
         .then((response) => response.json())
-        .then((data) => 
-          console.log(
-            data.success
-              ? "Checked user successfully"
-              : "Checked user unsuccessfuly"
+          .then((data) => {
+            if(data.success){
+              localStorage.setItem("userOne" , localStorage.getItem("user"))
+              localStorage.setItem("userTwo", user.UsernameToAdd)
+              this.setState({currentGroup : {userOne: localStorage.getItem("user"), userTwo: user.UsernameToAdd}})
+              console.log("Group created successfully")
+              console.log(this.state.currentGroup)
+              localStorage.setItem("inGroup" , "true")
+              this.setState({inGroup:true})
+              }
+              else{
+                console.log("was unable to create group")
+              }
+            }
           )
-        )
         .catch((err) => console.log(err))
   }
   
   render(){
 
-    let mainDiv = "not logged in";
+    let mainDiv = "Unable to Load";
 
-    console.log("Current user is: " + localStorage.getItem("user") )
+    console.log("Just ran render() and updated the page. Current user is: " + localStorage.getItem("user") )
 
-    if(localStorage.getItem("user") !== "not logged in"){
-    mainDiv = 
-      <div> 
-      <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
-      <p>Hello {localStorage.getItem("user")}!</p>
-      <p>Your favorite Movies: </p>
-      <p>Top suggested movie for you: </p>
-      <Group handleSubmit={this.handleSubmitGroup}/>
-      <button onClick={this.forceUpdateHandler}>Logout</button>
-      <MoviesTransition/>
-      </div>
-    }
-  else{
-    mainDiv =
-    <div>
-    <h1>Max and Kusak's Amazing 330 Creative Project: The Login Page</h1>
-  <Register handleSubmit={this.handleSubmitRegistration}/>
-  <Login handleSubmit={this.handleSubmitLogin}/>
-  </div>
-  }
 
-  return mainDiv;
+    // If logged in but not in a group
+    if((localStorage.getItem("user") !== "not logged in") && localStorage.getItem("inGroup") === "false"){
+      mainDiv = 
+        <div> 
+        <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
+        <p>Hello {localStorage.getItem("user")}!</p>
+        <p>Your favorite Movies: </p>
+        <p>Top suggested movie for you: </p>
+        <Group handleSubmit={this.handleSubmitGroup}/>
+        <button onClick={this.forceUpdateHandler}>Logout</button>
+        <MoviesTransition/>
+        </div>
+        return mainDiv;
+      }
+
+    // if logged in and in a group
+    if((localStorage.getItem("user") !== "not logged in") && localStorage.getItem("inGroup") === "true"){
+      mainDiv = 
+        <div> 
+        <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
+        <p>Hello {localStorage.getItem("user")}!</p>
+        <p>Your favorite Movies: </p>
+        <p>Top suggested movie for you: </p>
+        <p>Your current group is: {localStorage.getItem("userOne")} and {localStorage.getItem("userTwo")}</p>
+        <button onClick={this.forceUpdateHandlerGroup}>Disband Group</button>
+        <button onClick={this.forceUpdateHandler}>Logout</button>
+        <MoviesTransition/>
+        </div>
+        return mainDiv;
+      }
+
+    //if not logged in
+    if(localStorage.getItem("user") === "not logged in"){
+      mainDiv =
+        <div>
+        <h1>Max and Kusak's Amazing 330 Creative Project: The Login Page</h1>
+        <Register handleSubmit={this.handleSubmitRegistration}/>
+        <Login handleSubmit={this.handleSubmitLogin}/>
+        </div>
+        return mainDiv;
+      }
+
+  return localStorage.getItem("inGroup");
 }
 }
 

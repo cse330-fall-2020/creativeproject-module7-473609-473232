@@ -83,7 +83,7 @@ def createGroup():
 
         flash(error)
 
-    return render_template('auth/register.html')
+    return {"success":False}
     
 
 @bp.before_app_request

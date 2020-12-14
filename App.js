@@ -61,15 +61,6 @@ class App extends Component {
         )
         .catch((err) => console.error(err))
   }
-
-  // For logging out
-  // logout() {
-
-  //   localStorage.setItem('user', null)
-  //   console.log("logged out")
-  //   console.log(localStorage.getItem("user"))
- 
-  // }
   
   render(){
 

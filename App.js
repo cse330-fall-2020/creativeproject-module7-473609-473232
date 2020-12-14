@@ -4,6 +4,7 @@ import Login from './Login'
 import Group from './Group'
 import React, {Component, useEffect, useState} from 'react'
 import MoviesTransition from './MoviesTransition'
+// import MovieSearch from './MovieSearch'
 
 class App extends Component {
 

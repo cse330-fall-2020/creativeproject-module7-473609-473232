@@ -57,6 +57,28 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            return {"success":True, "username":username}
+
+        flash(error)
+
+    return render_template('auth/register.html')
+
+@bp.route('/create', methods=('GET', 'POST'))
+def createGroup():
+    print('Hello from python', flush=True)
+    if request.method == 'POST':
+        usernameToAdd = request.json['usernameToAdd']
+        db = get_db()
+        error = None
+
+        if not usernameToAdd:
+            error = 'Username to be added is required.'
+        elif db.execute(
+            'SELECT id FROM user WHERE username = ?', (usernameToAdd,)
+        ).fetchone() is None:
+            error = 'User {} is not registered.'.format(usernameToAdd)
+
+        if error is None:
             return {"success":True}
 
         flash(error)
@@ -78,7 +100,7 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return session.get('user_id');
 
 def login_required(view):
     @functools.wraps(view)

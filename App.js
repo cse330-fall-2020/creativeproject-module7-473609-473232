@@ -3,13 +3,22 @@ import Register from './Register';
 import Login from './Login'
 import React, {Component} from 'react'
 
-var currentUser = null;
-
 class App extends Component {
 
   state = {
     users: [],
   }
+
+  constructor(){
+    super();
+    this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
+  };
+
+  forceUpdateHandler(){
+    localStorage.setItem('user',"not logged in")
+    console.log("logged out")
+    this.forceUpdate();
+  };
 
 // For User Registration
   handleSubmitRegistration = (user) => {
@@ -41,7 +50,7 @@ class App extends Component {
       headers: {'content-type': 'application/json', "accepts":"application/json"},
     })
         .then((response) => response.json())
-        .then(currentUser = data.username)
+        .then(localStorage.setItem('user', data.username))
         .then((data) => 
           console.log(
             data.username,
@@ -54,32 +63,38 @@ class App extends Component {
   }
 
   // For logging out
-  logout() {
-    currentUser = null;
-    console.log("logged out")
-    window.location.reload(); 
-  }
+  // logout() {
+
+  //   localStorage.setItem('user', null)
+  //   console.log("logged out")
+  //   console.log(localStorage.getItem("user"))
+ 
+  // }
   
   render(){
-    console.log(currentUser)
-    if(currentUser == null){
-    return(
-      <div>
-        <h1>Max and Kusak's Amazing 330 Creative Project: The Login Page</h1>
-      <Register handleSubmit={this.handleSubmitRegistration} />
-      <Login handleSubmit={this.handleSubmitLogin}/>
+
+    let mainDiv = "not logged in";
+
+    console.log("Current user is: " + localStorage.getItem("user") )
+
+    if(localStorage.getItem("user") !== "not logged in"){
+    mainDiv = 
+      <div> 
+      <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
+      <p>Hello {localStorage.getItem("user")}!</p>
+      <button onClick={this.forceUpdateHandler}>Logout</button>
       </div>
-    );
     }
   else{
-    return(
-    <div> 
-    <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
-    <p>Hello {currentUser}!</p>
-    <button onClick={this.logout}>Logout</button>
-    </div>
-  );
+    mainDiv =
+    <div>
+    <h1>Max and Kusak's Amazing 330 Creative Project: The Login Page</h1>
+  <Register handleSubmit={this.handleSubmitRegistration} />
+  <Login handleSubmit={this.handleSubmitLogin}/>
+  </div>
   }
+
+  return mainDiv;
 }
 }
 

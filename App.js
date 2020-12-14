@@ -1,7 +1,9 @@
 import './App.css';
 import Register from './Register';
 import Login from './Login'
-import React, {Component} from 'react'
+import Group from './Group'
+import React, {Component, useEffect, useState} from 'react'
+import MoviesTransition from './MoviesTransition'
 
 class App extends Component {
 
@@ -61,6 +63,27 @@ class App extends Component {
         )
         .catch((err) => console.error(err))
   }
+
+  // For adding two users to a group
+  handleSubmitGroup = (user) => {
+    console.log("App.js: ", {user})
+    this.setState({user})
+    const data = {user}
+    fetch('/auth/create',{
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {'content-type': 'application/json', "accepts":"application/json"},
+    })
+        .then((response) => response.json())
+        .then((data) => 
+          console.log(
+            data.success
+              ? "Checked user successfully"
+              : "Checked user unsuccessfuly"
+          )
+        )
+        .catch((err) => console.log(err))
+  }
   
   render(){
 
@@ -73,14 +96,18 @@ class App extends Component {
       <div> 
       <h1>Max and Kusak's Amazing 330 Creative Project: The Home Page</h1>
       <p>Hello {localStorage.getItem("user")}!</p>
+      <p>Your favorite Movies: </p>
+      <p>Top suggested movie for you: </p>
+      <Group handleSubmit={this.handleSubmitGroup}/>
       <button onClick={this.forceUpdateHandler}>Logout</button>
+      <MoviesTransition/>
       </div>
     }
   else{
     mainDiv =
     <div>
     <h1>Max and Kusak's Amazing 330 Creative Project: The Login Page</h1>
-  <Register handleSubmit={this.handleSubmitRegistration} />
+  <Register handleSubmit={this.handleSubmitRegistration}/>
   <Login handleSubmit={this.handleSubmitLogin}/>
   </div>
   }

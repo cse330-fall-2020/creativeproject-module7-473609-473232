@@ -65,7 +65,6 @@ def login():
 
 @bp.route('/create', methods=('GET', 'POST'))
 def createGroup():
-    print('Hello from python', flush=True)
     if request.method == 'POST':
         usernameToAdd = request.json['usernameToAdd']
         db = get_db()

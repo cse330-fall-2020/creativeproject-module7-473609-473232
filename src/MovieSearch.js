@@ -1,24 +1,16 @@
-import React, {Component, useEffect, useState} from 'react'
+import React, {Component, useEffect, useState, useContext} from 'react'
 import { Movies } from "./Movies";
+import { Provider, Consumer } from './carrots'
 
 
+const MovieSearchFunc = (searched) => {
 
-function MovieSearchFunc() {
-
-    var searched = null;
-
-    const [movies, setMovies] = useState([]);
-
-    if(document.getElementById("searchQuery") == null){
-        searched = "lego%20movie";
-    }
-    else{
-        searched = document.getElementById("searchQuery").value
-        console.log(searched);
-    
-    }
+    const [movies, setMovies] = useState([]); 
+    console.log("This is searching: ", searched)   
    
-    let urlToSearch = "https://api.themoviedb.org/3/search/movie?api_key=0a852b8c0e76e27a1e104e9637bac3ce&language=en-US&query="+ searched +"&page=1&include_adult=false";
+    let urlToSearch = "https://api.themoviedb.org/3/search/movie?api_key=0a852b8c0e76e27a1e104e9637bac3ce&language=en-US&query="+ searched.searchQuery +"&page=1&include_adult=false";
+
+    console.log(urlToSearch)
 
     useEffect(() => {
         fetch(urlToSearch)
@@ -28,28 +20,24 @@ function MovieSearchFunc() {
         );
     }, []);
 
-    // render(
-    // <Movies/>,
-    // document.getElementById('App'))
 
     return movies;
 }
 
-export const MovieSearch = () => {
+export const MovieSearch = (props) => {
     const [title, setTitle] = useState('');
-
+    console.log(props)
 
     return (
         <div>
         <form>
             <input placeholder="Ex: Pulp Fiction" value={title} id="searchQuery" onChange={e => setTitle(e.target.value)}></input>
             <button onClick={ () => {
-            MovieSearchFunc();
+            MovieSearchFunc(props);
             }}>Search</button>
         </form>
-        <Movies movies={MovieSearchFunc()}/>
+        <Movies movies={MovieSearchFunc(props)}/>
         </div>
-    )
-}
+            )}
 
 export default MovieSearch

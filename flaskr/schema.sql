@@ -15,3 +15,14 @@ CREATE TABLE post (
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
+
+CREATE TABLE favorites (
+  username TEXT NOT NULL,
+  id INTEGER
+);
+
+CREATE TABLE ratings (
+  username TEXT NOT NULL,
+  id INTEGER NOT NULL,
+  rating INTEGER NOT NULL
+)

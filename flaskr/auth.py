@@ -1,7 +1,7 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, json
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -61,7 +61,7 @@ def login():
 
         flash(error)
 
-    return render_template('auth/register.html')
+    return ({"success":False})
 
 @bp.route('/create', methods=('GET', 'POST'))
 def createGroup():
@@ -83,6 +83,106 @@ def createGroup():
         flash(error)
 
     return {"success":False}
+
+@bp.route('/favorite', methods=('GET', 'POST'))
+def favorite():
+    if request.method == 'POST':
+        username = request.json['currentUser']
+        movieID = request.json['id']
+        print(movieID)
+        print(username)
+        db = get_db()
+        error = None
+
+        if not username:
+            error = 'Username is required.'
+        elif not movieID:
+            error = 'ID is required.'
+        elif db.execute(
+            'SELECT id FROM favorites WHERE username = ?', (username,)
+        ).fetchone() is movieID:
+            error = 'This movie has already been favorited'.format(username)
+
+        if error is None:
+            db.execute(
+                'INSERT INTO favorites (username, id) VALUES (?, ?)',
+                (username, movieID)
+            )
+            db.commit()
+            return {"success":True}
+
+        flash(error)
+
+    return {"success":False}
+
+@bp.route('/rating', methods=('GET', 'POST'))
+def rating():
+    if request.method == 'POST':
+        username = request.json['currentUser']
+        movieID = request.json['id']
+        rating = request.json['rating']
+        print(movieID)
+        print(username)
+        print(rating)
+        db = get_db()
+        error = None
+
+        if not username:
+            error = 'Username is required.'
+        elif not movieID:
+            error = 'ID is required.'
+        elif not rating:
+            error = 'Rating is required'
+        # elif db.execute(
+        #     'SELECT id FROM favorites WHERE username = ?', (username,)
+        # ).fetchone() is movieID:
+        #     error = 'This movie has already been favorited'.format(username)
+
+        if error is None:
+            db.execute(
+                'INSERT INTO ratings (username, id, rating) VALUES (?, ?, ?)',
+                (username, movieID, rating)
+            )
+            db.commit()
+            return {"success":True}
+
+        flash(error)
+
+    return {"success":False}
+
+@bp.route('/grabRatings', methods=('GET', 'POST'))
+def grabRatings():
+
+    if request.method == 'POST':
+        username = request.json['username']
+        db = get_db()
+        error = None
+
+        if not username:
+            error = 'Username is required.'
+            print("NOT USERNAME")
+
+        if error is None:
+            rows = db.execute(
+                'SELECT id, rating from ratings WHERE username = ?', (username,)
+            ).fetchall()
+
+            db.commit()
+
+            dict = {}
+
+            for row in rows:
+                dict.update({row[0] : row[1]})
+                print("HELLO", dict[row[0]])
+                
+
+            return dict, {"success":True}
+
+        flash(error)
+        print("FAILED")
+
+    return {"success":False}
+
     
 
 @bp.before_app_request

@@ -1,6 +1,8 @@
 import React, {Component, useEffect, useState, useContext} from 'react'
 import { Movies } from "./Movies";
 
+// searches for movies in the tMDB API
+
 
 const MovieSearchFunc = (searched) => {
 
@@ -28,6 +30,8 @@ export const MovieSearch = () => {
 
     return (
         <div>
+            <hr></hr>
+            <h2>Search For a Movie: </h2>
         <form>
             <input id="searchQuery" placeholder="Ex: Pulp Fiction"></input>
             <button onClick={ () => {

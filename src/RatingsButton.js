@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 
+// creates a form which allows the user to leave ratings for movies.
+
 class RatingsButton extends Component{
 
     handleSubmitRating = (id) => {
@@ -28,7 +30,7 @@ class RatingsButton extends Component{
             return(
 
             <form>
-            Rating: <input type = "number" id = {theID} pattern = "[0-9]"></input>
+            Rating: <input type = "number" id = {theID} min = "1" max = "10"></input>
             <button type="button" id="ratingButton" name = {theID} onClick={ () => {
                 localStorage.setItem("movieID", theID)
                 localStorage.setItem("rating", document.getElementById(theID).value)

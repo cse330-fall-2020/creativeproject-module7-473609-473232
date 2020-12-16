@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// main index file for the react/flask/sqlite app
+
 ReactDOM.render(
   <React.StrictMode>
     <App id = "app"/>

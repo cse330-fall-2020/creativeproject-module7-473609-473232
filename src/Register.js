@@ -1,6 +1,8 @@
 
 import React, {Component} from 'react'
 
+// creates a form that allows new users to register to the website
+
 class Register extends Component{
 
     initialState = {

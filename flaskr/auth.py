@@ -183,6 +183,38 @@ def grabRatings():
 
     return {"success":False}
 
+@bp.route('/grabFavorites', methods=('GET', 'POST'))
+def grabFavorites():
+
+    if request.method == 'POST':
+        username = request.json['username']
+        db = get_db()
+        error = None
+
+        if not username:
+            error = 'Username is required.'
+            print("NOT USERNAME")
+
+        if error is None:
+            rows = db.execute(
+                'SELECT id from favorites WHERE username = ?', (username,)
+            ).fetchall()
+
+            db.commit()
+
+            dict = {}
+
+            for row in rows:
+                dict.update({row[0] : username})
+                print("HELLO", dict[row[0]])
+                
+
+            return dict, {"success":True}
+
+        flash(error)
+        print("FAILED")
+
+    return {"success":False}
     
 
 @bp.before_app_request

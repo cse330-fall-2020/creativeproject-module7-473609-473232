@@ -88,7 +88,7 @@ def createGroup():
 def favorite():
     if request.method == 'POST':
         username = request.json['currentUser']
-        movieID = request.json['id']
+        movieID = int(request.json['id'])
         print(movieID)
         print(username)
         db = get_db()
@@ -98,9 +98,9 @@ def favorite():
             error = 'Username is required.'
         elif not movieID:
             error = 'ID is required.'
-        elif db.execute(
+        elif (db.execute(
             'SELECT id FROM favorites WHERE username = ?', (username,)
-        ).fetchone() is movieID:
+        ).fetchall().count(movieID) > 0):
             error = 'This movie has already been favorited'.format(username)
 
         if error is None:
@@ -119,7 +119,7 @@ def favorite():
 def rating():
     if request.method == 'POST':
         username = request.json['currentUser']
-        movieID = request.json['id']
+        movieID = int(request.json['id'])
         rating = request.json['rating']
         print(movieID)
         print(username)
@@ -133,10 +133,10 @@ def rating():
             error = 'ID is required.'
         elif not rating:
             error = 'Rating is required'
-        # elif db.execute(
-        #     'SELECT id FROM favorites WHERE username = ?', (username,)
-        # ).fetchone() is movieID:
-        #     error = 'This movie has already been favorited'.format(username)
+        elif (db.execute(
+            'SELECT id FROM ratings WHERE username = ?', (username,)
+        ).fetchall().count(movieID) > 0):
+            error = 'This movie has already been rated'.format(username)
 
         if error is None:
             db.execute(
